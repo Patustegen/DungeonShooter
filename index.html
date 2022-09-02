@@ -5,6 +5,7 @@
 <link rel="icon" href="PIdle1.png" type="image/png" sizes="16x16">
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
+<META name="viewport" content="width=device-width initial-scale=1.0 maximum-scale=1.0 user-scalable=0">
 <title>Dungeon Shooter</title>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="game.js"></script>
@@ -14,11 +15,9 @@
 	}
 	body {
 		background-color: black; 
-	}
-	div {
-		position: absolute;
-		left: 30%;
-		top: 2%;
+		padding:0px;
+		margin:0px;
+		overflow:hidden;
 	}
 	a {
 		color: white;
@@ -37,10 +36,169 @@
 </style>
 </head>
 
-<body Onload="joc()">
-<div>
+<body Onload="joc(); escalaGame(mainDIV);" onresize="escalaGame(mainDIV);">
+<div id="mainDIV">
 	<h1><a href="explicacio.html">Isaac: Dungeon</a></h1>
 	<canvas id="myCanvas" width="700" height="615" style="border:1px solid #d3d3d3;"></canvas>
 </div>
+<script type="text/javascript">
+function _preparaNavegador() {
+var meta0=document.createElement("META");
+meta0.httpEquiv="Content-type";
+meta0.content="text/html; charset=utf-8";
+document.head.appendChild(meta0);
+var meta1=document.createElement("META");
+meta1.name="viewport";
+meta1.content="width=device-width initial-scale=1.0 maximum-scale=1.0 user-scalable=0";
+document.head.appendChild(meta1);
+var meta2=document.createElement("META");
+meta2.name="apple-mobile-web-app-capable";
+meta2.content="yes";
+document.head.appendChild(meta2);
+var meta3=document.createElement("META");
+meta3.name="mobile-web-app-capable";
+meta3.content="yes";
+document.head.appendChild(meta3);
+var meta4=document.createElement("META");
+meta4.name="apple-mobile-web-app-status-bar-style";
+meta4.content="black";
+document.head.appendChild(meta4);
+var style = document.head.getElementsByTagName("STYLE")[0];
+if (!style) {
+style=document.createElement("STYLE");
+document.head.appendChild(style);
+}
+style.innerHTML+="* {"+"-webkit-tap-highlight-color: transparent;"+"-webkit-user-drag: none;"+"-webkit-touch-callout: none;"+"-webkit-user-select: none;"+"-khtml-user-select: none;"+"-moz-user-select: none;"+"-ms-user-select: none;"+"-ms-touch-action: manipulation;"+"touch-action: manipulation;"+"overflow:hidden;"+ "}";
+document.ontouchmove= function(event){event.preventDefault();}
+document.ontouchstart= function(event){event.preventDefault();}
+document.ontouchcancel= function(event){event.preventDefault();}
+document.onmousedown= function(event){event.preventDefault();}
+document.onclick= function(event){event.preventDefault();}
+document.ondblclick= function(event){event.preventDefault();}
+document.oncontextmenu= function(event){event.preventDefault();}
+document.ondrag= function(event){event.preventDefault();}
+window.ontouchmove= function(event){event.preventDefault();}
+window.ontouchstart= function(event){event.preventDefault();}
+window.ontouchcancel= function(event){event.preventDefault();}
+window.onmousedown= function(event){event.preventDefault();}
+window.onclick= function(event){event.preventDefault();}
+window.ondblclick= function(event){event.preventDefault();}
+window.oncontextmenu= function(event){event.preventDefault();}
+window.ondrag= function(event){event.preventDefault();}
+}
+
+function escalaGame(main){
+	requestAnimationFrame(function(){
+		main.style.position ="fixed";
+		main.style.overflow = "hidden";
+		main.style.width = main.width + "px";
+		main.style.height = main.height + "px";
+
+		var posX = (window.innerWidth / 2) - (main.offsetWidth /2);
+		var posY = (window.innerHeight / 2) - (main.offsetHeight / 2);
+		main.style.left = posX + "px";
+		main.style.top = posY + "px";
+
+		var winW = window.innerWidth / main.offsetWidth;
+		var winH = window.innerHeight / main.offsetHeight;
+		var escala = 1;
+		if (winW < winH) {
+			escala = winW;
+		}
+		else{
+			escala = winH;
+		}
+		main.style.transform="scale("+escala+")";
+		main.style.msTransform="scale("+escala+")";
+		main.style.MozTransform="scale("+escala+")";
+		main.style.WebkitTransform="scale("+escala+")";
+	});
+}
+_preparaNavegador();
+window.ontouchstart=premPantalla;
+window.ontouchmove=mouPantalla;
+window.ontouchend=deixaPantalla;
+
+var ImovX;
+var ImovY;
+
+function premPantalla(obj){
+	ImovX = obj.touches[0].pageX;
+	ImovY = obj.touches[0].pageY;
+	if (scene == 2) {
+		start = true;
+	}
+	if (scene == 3) {
+		if (ImovY < window.innerHeight / 2) {
+			if (ImovX > window.innerWidth / 2) {
+				shoot = 1;
+			}
+			else if (ImovX < window.innerWidth / 2) {
+				shoot = 2;
+			}
+		}
+		if (obj.touches.length == 2){
+			shoot = 1;
+		}
+		else if (obj.touches.length > 2){
+			shoot = 2;
+		}
+	}
+	
+	tempX = obj.touches[0].pageX;
+	tempY = obj.touches[0].pageY;
+}
+
+function mouPantalla(obj){
+	if (ImovY > window.innerHeight / 2) {
+		if (obj.touches[0].pageX <= ImovX - 20) {
+			keyLeft = true;
+			keyRight = false;
+		}
+		else if (obj.touches[0].pageX >= ImovX + 20) {
+			keyRight = true;
+			keyLeft = false;
+		}
+		if (obj.touches[0].pageY <= ImovY - 20) {
+			keyUp = true;
+			keyDown = false;
+		}
+		else if (obj.touches[0].pageY >= ImovY + 20) {
+			keyDown = true;
+			keyUp = false;
+		}
+	}
+	if (obj.touches[0].pageX - ImovX < -50){
+		ImovX = obj.touches[0].pageX + 50;
+	}
+	else if (obj.touches[0].pageX - ImovX > 50){
+		ImovX = obj.touches[0].pageX - 50;
+	}
+	if (obj.touches[0].pageY - ImovY < -50){
+		ImovY = obj.touches[0].pageY + 50;
+	}
+	else if (obj.touches[0].pageY - ImovY > 50){
+		ImovY = obj.touches[0].pageY - 50;
+	}
+	tempX = obj.touches[0].pageX;
+	tempY = obj.touches[0].pageY;
+}
+
+var tempX;
+var tempY;
+
+function deixaPantalla(obj){
+	start = false;
+	shoot = 0;
+	keyLeft = false;
+	keyRight = false;
+	keyUp = false;
+	keyDown	= false;
+	console.log(ImovX ,tempX, (ImovX - tempX));
+	console.log(ImovY ,tempY, (ImovY - tempY));
+}
+
+
+</script>
 </body>
 </html> 
